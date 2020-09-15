@@ -24,5 +24,11 @@ class RsListApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(content().string("[事件1, 事件2, 事件3]"));
     }
+    @Test
+    void should_get_one() throws Exception {
+        mockMvc.perform(get("/qiu/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("[事件1]"));
+    }
 
 }

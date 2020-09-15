@@ -13,4 +13,7 @@ public class RsController {
   public String getAllRsEvent(){
     return context.toString();
   }
+
+  //@GetMapping()
+
 }
