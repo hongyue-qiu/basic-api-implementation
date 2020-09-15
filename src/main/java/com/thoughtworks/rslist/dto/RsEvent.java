@@ -1,10 +1,15 @@
-package dto;
+package com.thoughtworks.rslist.dto;
 
 public class RsEvent {
-    String eventName;
-    String keyword;
+    private String eventName;
+    private String keyword;
 
     public RsEvent() {
+    }
+
+    public RsEvent(String eventName, String keyword) {
+        this.eventName = eventName;
+        this.keyword = keyword;
     }
 
     public String getEventName() {
