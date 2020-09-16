@@ -12,6 +12,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -143,6 +146,25 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[0].keyword", is("无分类")))
                 .andExpect(jsonPath("$[1].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[1].keyword", is("无分类")));
+    }
+
+    @Test
+    void shouldAddNameIfUsernameEmpty() throws Exception {
+        List<RsEvent> rsEventList = new ArrayList<>();
+        RsEvent rsEvent = new RsEvent("第一条事件", "无分类","");
+        rsEventList.add(rsEvent);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(rsEventList);
+        mockMvc.perform(put("/rs/list/has_user_name")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(json))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/rs/list"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
+                .andExpect(jsonPath("$[0].keyword", is("无分类")))
+                .andExpect(jsonPath("$[0].username", is("qq")));
     }
 
 

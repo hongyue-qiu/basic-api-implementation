@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.RsEvent;
+import com.thoughtworks.rslist.dto.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -11,8 +12,19 @@ import java.util.List;
 
 @RestController
 public class RsController {
-    private List<RsEvent> rsList = initRsList();
 
+
+
+    User user = new User("qq","femail",20,"123@123.com","10123456789");
+    List<User> userLists = initUserList();
+    private List<User> initUserList() {
+        List<User> userTempList = new ArrayList<>();
+        userTempList.add(new User("qq","femail",20,"123@123.com","10123456789"));
+        return userTempList;
+    }
+
+
+    private List<RsEvent> rsList = initRsList();
     private List<RsEvent> initRsList() {
         List<RsEvent> tempRsList = new ArrayList<>();
         tempRsList.add(new RsEvent("第一条事件", "无分类"));
@@ -58,5 +70,15 @@ public class RsController {
         rsList.remove(index - 1);
     }
 
+    @PutMapping("/rs/list/has_user_name")
+    public void addUserName(@RequestBody List<RsEvent> rsEventList){
+        List<RsEvent> tempList = rsList;
+        for (int i = 0; i < tempList.size(); i++) {
+            RsEvent rsEvent =tempList.get(i);
+            //if (rsEvent.getUsername() == null)
+            rsEvent.setUserName(user.getName());
+        }
+
+    }
 
 }

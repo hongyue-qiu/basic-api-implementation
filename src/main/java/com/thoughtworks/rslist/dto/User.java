@@ -29,4 +29,12 @@ public class User {
         this.email = email;
         this.phone = phone;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
