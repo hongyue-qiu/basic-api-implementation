@@ -59,6 +59,18 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void user_gender_not_null() throws Exception {
+        User user = new User("12345678","",19,"123@123.com","10123456789");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonUserStr = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user/register")
+                .content(jsonUserStr)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
 
 
 
