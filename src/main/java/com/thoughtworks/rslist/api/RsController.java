@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.exception.PostResult;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,25 +36,27 @@ public class RsController {
     }
 
     @GetMapping("/rs/list")
-    public List<RsEvent> getRsEventByRange(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
+    public ResponseEntity<List<RsEvent>> getRsEventByRange(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
         if (start == null || end == null) {
-            return rsList;
+            return ResponseEntity.created(null).body(rsList);
         }
-        return rsList.subList(start - 1, end);
+        return ResponseEntity.created(null).body(rsList.subList(start - 1, end));
     }
 
     @GetMapping("/rs/event/{index}")
-    public RsEvent getRsEventByRange(@PathVariable int index) {
-        return rsList.get(index - 1);
+    public ResponseEntity<RsEvent> getRsEventByRange(@PathVariable int index) {
+        return ResponseEntity.created(null).body(rsList.get(index - 1));
     }
 
     @PostMapping("/rs/event")
-    public void addRsEvent(@RequestBody RsEvent rsEvent) throws JsonProcessingException {
+    public ResponseEntity<PostResult> addRsEvent(@RequestBody RsEvent rsEvent) throws JsonProcessingException {
         rsList.add(rsEvent);
+
+        return getPostResultResponseEntity();
     }
 
     @PutMapping("/rs/modify/{index}")
-    public void modifyResearch(@PathVariable int index, @RequestBody RsEvent rsEvent) {
+    public ResponseEntity<PostResult> modifyResearch(@PathVariable int index, @RequestBody RsEvent rsEvent) {
 
         RsEvent reEventModified = rsList.get(index - 1);
         if (!rsEvent.getEventName().isEmpty()) {
@@ -63,15 +67,18 @@ public class RsController {
         }
 
         rsList.set(index - 1, reEventModified);
+
+        return getPostResultResponseEntity();
     }
 
     @DeleteMapping("/rs/delete/{index}")
-    public void deleteResearch(@PathVariable int index) {
+    public ResponseEntity<PostResult> deleteResearch(@PathVariable int index) {
         rsList.remove(index - 1);
+        return getPostResultResponseEntity();
     }
 
     @PutMapping("/rs/list/has_user_name")
-    public void addUserName(@RequestBody List<RsEvent> rsEventList){
+    public ResponseEntity<PostResult> addUserName(@RequestBody List<RsEvent> rsEventList){
         List<RsEvent> tempList = rsList;
         for (int i = 0; i < tempList.size(); i++) {
             RsEvent rsEvent =tempList.get(i);
@@ -79,6 +86,15 @@ public class RsController {
             rsEvent.setUserName(user.getName());
         }
 
+        return getPostResultResponseEntity();
+
+    }
+
+    private ResponseEntity<PostResult> getPostResultResponseEntity() {
+        PostResult postResult = new PostResult();
+        int num = rsList.indexOf(user);
+        postResult.setIndex(num);
+        return ResponseEntity.created(null).body(postResult);
     }
 
 }

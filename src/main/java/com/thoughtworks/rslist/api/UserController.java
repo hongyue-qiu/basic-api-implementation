@@ -1,6 +1,7 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.exception.PostResult;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,9 +17,12 @@ public class UserController {
     List<User> userList = new ArrayList<>();
 
     @PostMapping("/user/register")
-    public ResponseEntity registUser(@Valid @RequestBody User user){
+    public ResponseEntity<PostResult> registUser(@Valid @RequestBody User user){
         userList.add(user);
-        return ResponseEntity.created(null).build();
+        PostResult postResult = new PostResult();
+        int num = userList.indexOf(user);
+        postResult.setIndex(num);
+        return ResponseEntity.created(null).body(postResult);
     }
 
 }

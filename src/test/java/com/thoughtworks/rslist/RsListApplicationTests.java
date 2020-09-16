@@ -29,22 +29,11 @@ class RsListApplicationTests {
     @Autowired
     MockMvc mockMvc;
 
-    @Test
-    private void checkEventList() throws Exception {
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
-                .andExpect(jsonPath("$[0].keyword", is("无分类")))
-                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
-                .andExpect(jsonPath("$[1].keyword", is("无分类")))
-                .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
-                .andExpect(jsonPath("$[2].keyword", is("无分类")));
-    }
 
     @Test
     void contextLoads() throws Exception {
         mockMvc.perform(get("/rs/list?start=1&end=3"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("无分类")))
                 .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
@@ -57,15 +46,15 @@ class RsListApplicationTests {
     @Test
     void geOneOfEvent() throws Exception {
         mockMvc.perform(get("/rs/event/1"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.eventName", is("第一条事件")))
                 .andExpect(jsonPath("$.keyword", is("无分类")));
         mockMvc.perform(get("/rs/event/2"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.eventName", is("第二条事件")))
                 .andExpect(jsonPath("$.keyword", is("无分类")));
         mockMvc.perform(get("/rs/event/3"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.eventName", is("第三条事件")))
                 .andExpect(jsonPath("$.keyword", is("无分类")));
 
@@ -74,16 +63,16 @@ class RsListApplicationTests {
     @Test
     void shouldAddOneEvent() throws Exception {
         mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$", hasSize(3)));
         RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济");
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event")
                 .content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$", hasSize(4)))
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("无分类")))
@@ -113,7 +102,7 @@ class RsListApplicationTests {
 
 
         mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$[0].eventName", is("经过修改后的第一条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("其他类")))
                 .andExpect(jsonPath("$[1].eventName", is("经过修改后的第二条事件")))
@@ -131,17 +120,17 @@ class RsListApplicationTests {
         mockMvc.perform(put(url)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(jsonString))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
     void shouldCouldDeleteByIndex() throws Exception {
 
         mockMvc.perform(delete("/rs/delete/1"))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$[0].eventName", is("第二条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("无分类")))
                 .andExpect(jsonPath("$[1].eventName", is("第三条事件")))
@@ -158,10 +147,10 @@ class RsListApplicationTests {
         mockMvc.perform(put("/rs/list/has_user_name")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(json))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("无分类")))
                 .andExpect(jsonPath("$[0].username", is("qq")));
