@@ -71,6 +71,29 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void user_age_not_null() throws Exception {
+        User user = new User("12345678","男", null,"123@123.com","10123456789");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonUserStr = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user/register")
+                .content(jsonUserStr)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void user_age_18_more() throws Exception {
+        User user = new User("qqq","男",17,"123@123.com","10123456789");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonUserStr = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user/register")
+                .content(jsonUserStr)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 
 
 
