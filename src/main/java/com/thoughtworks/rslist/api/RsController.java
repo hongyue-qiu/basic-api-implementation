@@ -1,7 +1,6 @@
 package com.thoughtworks.rslist.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.exception.PostResult;
@@ -9,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -81,8 +79,9 @@ public class RsController {
         List<RsEvent> tempList = rsList;
         for (int i = 0; i < tempList.size(); i++) {
             RsEvent rsEvent =tempList.get(i);
-            //if (rsEvent.getUsername() == null)
+            if (rsEvent.getEventUser() == null)
             rsEvent.setUserName(user.getName());
+            rsEvent.setEventUser(user);
             return ResponseEntity.created(null).header("index",String.valueOf(i)).build();
         }
 
