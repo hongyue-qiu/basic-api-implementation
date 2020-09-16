@@ -2,8 +2,12 @@ package com.thoughtworks.rslist.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+
 @Data
 public class User {
+
+    @NotEmpty
     private String name;
     private String gender;
     private Integer age;
