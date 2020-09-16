@@ -3,21 +3,25 @@ package com.thoughtworks.rslist.dto;
 import lombok.Data;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 @Data
 public class RsEvent {
-    public RsEvent(String eventName, String keyword, User eventUser) {
-        this.eventName = eventName;
-        this.keyword = keyword;
-        this.eventUser = eventUser;
-    }
 
+
+    @NotEmpty
     private String eventName;
     private String keyword;
     private String userName;
     @Valid
     User eventUser;
 
+
+    public RsEvent(String eventName, String keyword, User eventUser) {
+        this.eventName = eventName;
+        this.keyword = keyword;
+        this.eventUser = eventUser;
+    }
     public String getUsername() {
         return userName;
     }
