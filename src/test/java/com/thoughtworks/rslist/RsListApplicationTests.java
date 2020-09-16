@@ -164,7 +164,7 @@ class RsListApplicationTests {
         mockMvc.perform(post("/rs/event")
                 .content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid index")));
+                .andExpect(jsonPath("$.error",is("invalid param")));
     }
 
 }

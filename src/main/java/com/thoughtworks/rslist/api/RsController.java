@@ -62,7 +62,7 @@ public class RsController {
 
         if (ex instanceof MethodArgumentNotValidException){
             CommentError commentError = new CommentError();
-            commentError.setError("invalid index");
+            commentError.setError("invalid param");
             return ResponseEntity.badRequest().body(commentError);
         }
 
@@ -73,9 +73,6 @@ public class RsController {
 
     @PostMapping("/rs/event")
     public ResponseEntity addRsEvent(@Valid @RequestBody RsEvent rsEvent) throws JsonProcessingException {
-//        if (rsEvent.getEventName() == null){
-//            throw new MethodArgumentNotValidException();
-//        }
         rsList.add(rsEvent);
         return ResponseEntity.created(null).header("index",String.valueOf(rsList.indexOf(rsEvent))).build();
     }
