@@ -16,6 +16,7 @@ public class User {
     @Min(18)
     @Max(100)
     private Integer age;
+    @Email
     private String email;
     private String phone;
     private Integer vote = 1;
