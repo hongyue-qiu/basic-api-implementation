@@ -3,11 +3,13 @@ package com.thoughtworks.rslist.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Data
 public class User {
 
     @NotEmpty
+    @Size(max = 8)
     private String name;
     private String gender;
     private Integer age;

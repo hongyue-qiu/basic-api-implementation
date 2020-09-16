@@ -47,4 +47,19 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void user_name_not_more_8() throws Exception {
+        User user = new User("123456789","男",19,"123@123.com","10123456789");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonUserStr = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user/register")
+                .content(jsonUserStr)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+
+
+
 }
