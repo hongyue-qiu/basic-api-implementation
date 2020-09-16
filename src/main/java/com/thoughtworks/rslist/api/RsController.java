@@ -29,15 +29,13 @@ public class RsController {
     return rsList.subList(start-1,end);
   }
 
-  @GetMapping("/rs/{index}")
+  @GetMapping("/rs/event/{index}")
   public RsEvent getRsEventByRange(@PathVariable int index){
     return rsList.get(index -1);
   }
 
-  @GetMapping("/rs/event")
+  @PostMapping("/rs/event")
   public void addRsEvent(@RequestBody RsEvent rsEvent) throws JsonProcessingException {
-//    ObjectMapper objectMapper = new ObjectMapper();
-//    RsEvent rsEvent = objectMapper.readValue(rsEventStr,RsEvent.class);
     rsList.add(rsEvent);
   }
 

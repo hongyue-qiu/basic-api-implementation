@@ -52,19 +52,18 @@ class RsListApplicationTests {
 
     @Test
     void geOneOfEvent() throws Exception {
-        mockMvc.perform(get("/rs/1"))
+        mockMvc.perform(get("/rs/event/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
-                .andExpect(jsonPath("$[0].keyword", is("无分类")));
-        mockMvc.perform(get("/rs/2"))
+                .andExpect(jsonPath("$.eventName", is("第一条事件")))
+                .andExpect(jsonPath("$.keyword", is("无分类")));
+        mockMvc.perform(get("/rs/event/2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
-                .andExpect(jsonPath("$[1].keyword", is("无分类")));
-        mockMvc.perform(get("/rs/3"))
+                .andExpect(jsonPath("$.eventName", is("第二条事件")))
+                .andExpect(jsonPath("$.keyword", is("无分类")));
+        mockMvc.perform(get("/rs/event/3"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
-                .andExpect(jsonPath("$[2].keyword", is("无分类")));
-
+                .andExpect(jsonPath("$.eventName", is("第三条事件")))
+                .andExpect(jsonPath("$.keyword", is("无分类")));
 
     }
 
