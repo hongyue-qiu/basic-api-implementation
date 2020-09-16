@@ -18,6 +18,7 @@ public class User {
     private Integer age;
     @Email
     private String email;
+    @Pattern(regexp = "^1//d{10}$")
     private String phone;
     private Integer vote = 1;
 

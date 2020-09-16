@@ -119,6 +119,29 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void user_phone_number_not_start_1() throws Exception {
+        User user = new User("qqq","男",19,"11@23.com","20123456789");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonUserStr = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user/register")
+                .content(jsonUserStr)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void user_phone_number_not_length_is_11() throws Exception {
+        User user = new User("qqq","男",19,"11@23.com","1123456789");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonUserStr = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user/register")
+                .content(jsonUserStr)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 
 
 }
