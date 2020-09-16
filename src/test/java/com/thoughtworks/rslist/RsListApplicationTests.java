@@ -26,6 +26,7 @@ class RsListApplicationTests {
     @Autowired
     MockMvc mockMvc;
 
+    @Test
     private void checkEventList() throws Exception {
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
@@ -102,7 +103,6 @@ class RsListApplicationTests {
         String eventIndexTwoJsonStringModified = convertResearchToJsonString(eventIndexInTwoModify);
         String eventIndexThreeJsonStringModified = convertResearchToJsonString(eventIndexInThreeModify);
 
-        checkEventList();
 
         performPut("/rs/modify/1", eventIndexOneJsonStringModified);
         performPut("/rs/modify/2", eventIndexTwoJsonStringModified);
@@ -133,7 +133,6 @@ class RsListApplicationTests {
 
     @Test
     void shouldCouldDeleteByIndex() throws Exception {
-        checkEventList();
 
         mockMvc.perform(delete("/rs/delete/1"))
                 .andExpect(status().isOk());
