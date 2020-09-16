@@ -70,7 +70,8 @@ class RsListApplicationTests {
         String json = objectMapper.writeValueAsString(rsEvent);
         mockMvc.perform(post("/rs/event")
                 .content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(header().string("index","3"));
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$", hasSize(4)))
@@ -103,6 +104,7 @@ class RsListApplicationTests {
 
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isCreated())
+
                 .andExpect(jsonPath("$[0].eventName", is("经过修改后的第一条事件")))
                 .andExpect(jsonPath("$[0].keyword", is("其他类")))
                 .andExpect(jsonPath("$[1].eventName", is("经过修改后的第二条事件")))
@@ -147,7 +149,7 @@ class RsListApplicationTests {
         mockMvc.perform(put("/rs/list/has_user_name")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(json))
-                .andExpect(status().isCreated());
+                        .andExpect(status().isCreated());
 
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isCreated())

@@ -22,19 +22,14 @@ public class UserController {
     }
 
     @PostMapping("/user/register")
-    public ResponseEntity<PostResult> registUser(@Valid @RequestBody User user) {
+    public ResponseEntity registUser(@Valid @RequestBody User user) {
         userLists.add(user);
-        PostResult postResult = new PostResult();
-        int num = userLists.indexOf(user);
-        postResult.setIndex(num);
-        return ResponseEntity.created(null).body(postResult);
+
+        return ResponseEntity.created(null).header("index",String.valueOf(userLists.indexOf(user))).build();
     }
 
     @GetMapping("/rs/userList")
     public ResponseEntity<List<User>> getRsEventByRange() {
-//        if (start == null || end == null) {
-//            return ResponseEntity.created(null).body(userList);
-//        }
         return ResponseEntity.created(null).body(userLists);
     }
 

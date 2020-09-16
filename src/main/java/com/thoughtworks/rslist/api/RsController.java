@@ -49,14 +49,13 @@ public class RsController {
     }
 
     @PostMapping("/rs/event")
-    public ResponseEntity<PostResult> addRsEvent(@RequestBody RsEvent rsEvent) throws JsonProcessingException {
+    public ResponseEntity addRsEvent(@RequestBody RsEvent rsEvent) throws JsonProcessingException {
         rsList.add(rsEvent);
-
-        return getPostResultResponseEntity();
+        return ResponseEntity.created(null).header("index",String.valueOf(rsList.indexOf(rsEvent))).build();
     }
 
     @PutMapping("/rs/modify/{index}")
-    public ResponseEntity<PostResult> modifyResearch(@PathVariable int index, @RequestBody RsEvent rsEvent) {
+    public ResponseEntity modifyResearch(@PathVariable int index, @RequestBody RsEvent rsEvent) {
 
         RsEvent reEventModified = rsList.get(index - 1);
         if (!rsEvent.getEventName().isEmpty()) {
@@ -68,33 +67,28 @@ public class RsController {
 
         rsList.set(index - 1, reEventModified);
 
-        return getPostResultResponseEntity();
+        return ResponseEntity.created(null).header("index",String.valueOf(rsList.indexOf(rsEvent))).build();
     }
 
     @DeleteMapping("/rs/delete/{index}")
     public ResponseEntity<PostResult> deleteResearch(@PathVariable int index) {
         rsList.remove(index - 1);
-        return getPostResultResponseEntity();
+        return ResponseEntity.created(null).header("index",String.valueOf(index)).build();
     }
 
     @PutMapping("/rs/list/has_user_name")
-    public ResponseEntity<PostResult> addUserName(@RequestBody List<RsEvent> rsEventList){
+    public ResponseEntity addUserName(@RequestBody List<RsEvent> rsEventList){
         List<RsEvent> tempList = rsList;
         for (int i = 0; i < tempList.size(); i++) {
             RsEvent rsEvent =tempList.get(i);
             //if (rsEvent.getUsername() == null)
             rsEvent.setUserName(user.getName());
+            return ResponseEntity.created(null).header("index",String.valueOf(i)).build();
         }
 
-        return getPostResultResponseEntity();
+        return ResponseEntity.created(null).build();
 
     }
 
-    private ResponseEntity<PostResult> getPostResultResponseEntity() {
-        PostResult postResult = new PostResult();
-        int num = rsList.indexOf(user);
-        postResult.setIndex(num);
-        return ResponseEntity.created(null).body(postResult);
-    }
 
 }
