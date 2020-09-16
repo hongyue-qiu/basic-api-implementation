@@ -104,7 +104,7 @@ public class RsController {
         List<RsEvent> tempList = rsList;
         for (int i = 0; i < tempList.size(); i++) {
             RsEvent rsEvent =tempList.get(i);
-            //if (rsEvent.getUsername() == null)
+            if (rsEvent.getEventUser() == null)
             rsEvent.setUserName(user.getName());
             return ResponseEntity.created(null).header("index",String.valueOf(i)).build();
         }

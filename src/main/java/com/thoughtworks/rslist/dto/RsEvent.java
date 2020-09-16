@@ -33,6 +33,7 @@ public class RsEvent {
     public RsEvent() {
     }
 
+
     public RsEvent(String eventName, String keyword) {
         this.eventName = eventName;
         this.keyword = keyword;
