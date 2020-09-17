@@ -1,10 +1,12 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.repository.UserRepository;
-import com.thoughtworks.rslist.entity.UserEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +27,7 @@ public class UserController {
         return userTempList;
     }
 
-    private final UserRepository userRepository;
+    UserRepository userRepository;
 
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -49,6 +51,13 @@ public class UserController {
                                 .build();
         userRepository.save(userEntity);
         return ResponseEntity.created(null).header("index", String.valueOf(userLists.indexOf(user))).build();
+    }
+
+    @DeleteMapping("/user/{id}")
+    @Transactional
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable int id){
+        userRepository.deleteById(id);
     }
 
     @GetMapping("/rs/userList")

@@ -21,7 +21,7 @@ public class UserEntity {
 
     @javax.persistence.Id
     @GeneratedValue
-    Integer Id;
+    private Integer Id;
     @Column(name = "name")
     private String name;
     private String gender;

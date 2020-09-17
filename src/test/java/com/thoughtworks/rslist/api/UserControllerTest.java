@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.entity.UserEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,8 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +30,11 @@ class UserControllerTest {
     MockMvc mockMvc;
     @Autowired
     UserRepository userRepository;
+
+    @BeforeEach
+    void setUp() {
+        userRepository.deleteAll();
+    }
 
     @Test
     void contextLoads() throws Exception {
@@ -67,13 +72,33 @@ class UserControllerTest {
                 .andExpect(status().isCreated());
 
         List<UserEntity> users = userRepository.findAll();
-        assertEquals(1,users.size());
-        assertEquals("qqq",users.get(0).getName());
+        assertEquals(1, users.size());
+        assertEquals("qqq", users.get(0).getName());
 
 
     }
 
+    @Test
+    void entityuser_delete() throws Exception {
+        UserEntity userEntity = UserEntity.builder()
+                .name("haah")
+                .email("123@123")
+                .age(20)
+                .gender("male")
+                .phone("10123456789")
+                .vote(10)
+                .build();
+        userRepository.save(userEntity);
 
+
+        mockMvc.perform(delete("/user/{id}", userEntity.getId()))
+                .andExpect(status().isNoContent());
+
+        List<UserEntity> users = userRepository.findAll();
+        assertEquals(0, users.size());
+
+
+    }
 
 
     @Test
@@ -86,7 +111,7 @@ class UserControllerTest {
                 .content(jsonUserStr)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid user")));
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -99,7 +124,7 @@ class UserControllerTest {
                 .content(jsonUserStr)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid user")));
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -112,7 +137,7 @@ class UserControllerTest {
                 .content(jsonUserStr)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid user")));
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -125,7 +150,7 @@ class UserControllerTest {
                 .content(jsonUserStr)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid user")));
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -138,7 +163,7 @@ class UserControllerTest {
                 .content(jsonUserStr)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid user")));
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -151,7 +176,7 @@ class UserControllerTest {
                 .content(jsonUserStr)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid user")));
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -164,7 +189,7 @@ class UserControllerTest {
                 .content(jsonUserStr)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid user")));
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -177,7 +202,7 @@ class UserControllerTest {
                 .content(jsonUserStr)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid user")));
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
     @Test
@@ -190,7 +215,7 @@ class UserControllerTest {
                 .content(jsonUserStr)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error",is("invalid user")));
+                .andExpect(jsonPath("$.error", is("invalid user")));
     }
 
 
