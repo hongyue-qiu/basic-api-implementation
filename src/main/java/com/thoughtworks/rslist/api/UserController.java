@@ -3,7 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.repository.UserRepository;
-import com.thoughtworks.rslist.userentity.UserEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
