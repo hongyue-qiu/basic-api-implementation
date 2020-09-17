@@ -1,9 +1,9 @@
 package com.thoughtworks.rslist.api;
 
-import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
-import com.thoughtworks.rslist.exception.PostResult;
+import com.thoughtworks.rslist.exception.CommentError;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +24,9 @@ public class UserController {
     @PostMapping("/user/register")
     public ResponseEntity registUser(@Valid @RequestBody User user) {
         userLists.add(user);
+        if (user.getName() == null || user.getGender() == null){
+
+        }
 
         return ResponseEntity.created(null).header("index",String.valueOf(userLists.indexOf(user))).build();
     }
@@ -31,6 +34,15 @@ public class UserController {
     @GetMapping("/rs/userList")
     public ResponseEntity<List<User>> getRsEventByRange() {
         return ResponseEntity.created(null).body(userLists);
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<CommentError> handle(Exception ex){
+
+        CommentError commentError = new CommentError();
+        commentError.setError("invalid user");
+        return ResponseEntity.badRequest().body(commentError);
+
     }
 
 }
