@@ -15,14 +15,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -53,18 +52,19 @@ class RsListApplicationTests {
                 .vote(10)
                 .build();
         userRepository.save(user);
-        String json = "{\"eventName\":\"event\",\"keyword\":\"valid\",\"userId\":" + user.getId()+"}";
+        String json = "{\"eventName\":\"event\",\"keyword\":\"valid\",\"userId\":" + user.getId() + "}";
         mockMvc.perform(post("/rs/event")
                 .content(json)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
         List<RsEventEntity> rsEventEntities = rsEventRepository.findAll();
-        assertEquals(1,rsEventEntities.size());
-        assertEquals("event",rsEventEntities.get(0).getEventName());
-
+        assertEquals(1, rsEventEntities.size());
+        assertEquals("event", rsEventEntities.get(0).getEventName());
 
     }
+
+
 
     @Test
     void contextLoads() throws Exception {
@@ -93,32 +93,6 @@ class RsListApplicationTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.eventName", is("第三条事件")))
                 .andExpect(jsonPath("$.keyword", is("无分类")));
-
-    }
-
-    @Test
-    void shouldAddOneEvent() throws Exception {
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$", hasSize(3)));
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(rsEvent);
-        mockMvc.perform(post("/rs/event")
-                .content(json).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("index", "3"));
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$", hasSize(4)))
-                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
-                .andExpect(jsonPath("$[0].keyword", is("无分类")))
-                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
-                .andExpect(jsonPath("$[1].keyword", is("无分类")))
-                .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
-                .andExpect(jsonPath("$[2].keyword", is("无分类")))
-                .andExpect(jsonPath("$[3].eventName", is("猪肉涨价了")))
-                .andExpect(jsonPath("$[3].keyword", is("经济")));
 
     }
 
@@ -173,25 +147,6 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[0].keyword", is("无分类")))
                 .andExpect(jsonPath("$[1].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[1].keyword", is("无分类")));
-    }
-
-    @Test
-    void shouldAddNameIfUsernameEmpty() throws Exception {
-        List<RsEvent> rsEventList = new ArrayList<>();
-        RsEvent rsEvent = new RsEvent("第一条事件", "无分类", "");
-        rsEventList.add(rsEvent);
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(rsEventList);
-        mockMvc.perform(put("/rs/list/has_user_name")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(json))
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
-                .andExpect(jsonPath("$[0].keyword", is("无分类")))
-                .andExpect(jsonPath("$[0].username", is("qq")));
     }
 
     @Test
