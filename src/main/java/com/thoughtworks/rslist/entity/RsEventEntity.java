@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Data
 public class RsEventEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "name")
     private String eventName;

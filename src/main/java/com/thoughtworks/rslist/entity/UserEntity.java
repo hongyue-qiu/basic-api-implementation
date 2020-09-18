@@ -18,7 +18,7 @@ import java.util.List;
 public class UserEntity{
 
     @javax.persistence.Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer Id;
     @Column(name = "name")
     private String name;

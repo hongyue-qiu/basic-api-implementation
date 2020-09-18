@@ -96,10 +96,30 @@ class RsListApplicationTests {
         mockMvc.perform(get("/rs/event/{index}",rsEventEntity.getId()))
                 .andExpect(jsonPath("$.eventName",is("event2")))
                 .andExpect(jsonPath("$.user.name",is("usera")));
-
-
     }
 
+    @Test
+    public void shouldUpdateEvent_when_userId_exsist_in_eventId() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .name("usera")
+                .gender("male")
+                .age(20)
+                .phone("10123456789")
+                .email("123@12.cn")
+                .vote(10)
+                .Id(1)
+                .build();
+        userRepository.save(user);
+        String json = "{\"eventName\":\"event\",\"keyword\":\"valid\",\"userId\":1}";
+
+        mockMvc.perform(post("/rs/{eventIndex}",1)
+                .content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        List<RsEventEntity> rsEventEntities = rsEventRepository.findAll();
+        assertEquals("usera", rsEventEntities.get(0).getUser().getName());
+
+    }
 
     @Test
     void contextLoads() throws Exception {

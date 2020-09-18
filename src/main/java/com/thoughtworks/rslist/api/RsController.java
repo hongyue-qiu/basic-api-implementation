@@ -71,7 +71,6 @@ public class RsController {
 
         RsEventEntity rsEventEntity = result.get();
         UserEntity user = rsEventEntity.getUser();
-//        userRepository.findAllById(rsEventRepository.getUserId()).get();
 
         return ResponseEntity.ok(RsEvent.builder()
                 .eventName(rsEventEntity.getEventName())
@@ -153,6 +152,24 @@ public class RsController {
 
         return ResponseEntity.created(null).build();
 
+    }
+
+    @PostMapping("/rs/{eventIndex}")
+    public ResponseEntity updateEventUserMessage(@Valid @PathVariable int eventIndex, @RequestBody RsEvent rsEvent) {
+        if (!userRepository.existsById(rsEvent.getUserId())){
+            return ResponseEntity.badRequest().build();
+        }
+
+        RsEventEntity rsEventEntity = RsEventEntity.builder()
+                .eventName(rsEvent.getEventName())
+                .keyword(rsEvent.getKeyword())
+                .user(UserEntity.builder()
+                        .Id(rsEvent.getUserId())
+                        .build())
+                .build();
+        rsEventRepository.save(rsEventEntity);
+
+        return ResponseEntity.created(null).build();
     }
 
 

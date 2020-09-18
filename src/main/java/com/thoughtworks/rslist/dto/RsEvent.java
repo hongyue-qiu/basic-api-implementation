@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Data
@@ -19,6 +20,7 @@ public class RsEvent implements Serializable {
     private String eventName;
     private String keyword;
     private String userName;
+    @NotNull
     private Integer userId;
 
     private User user;
