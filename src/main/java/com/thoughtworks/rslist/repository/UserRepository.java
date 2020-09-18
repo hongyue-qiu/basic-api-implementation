@@ -6,9 +6,8 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository extends CrudRepository<UserEntity,Integer> {
+public interface UserRepository extends CrudRepository<UserEntity, Integer> {
     List<UserEntity> findAll();
 
     Optional<UserEntity> findById(Integer id);
-//    List<UserEntity> findAllByName(String name);
 }
