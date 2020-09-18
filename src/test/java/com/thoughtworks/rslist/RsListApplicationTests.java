@@ -122,6 +122,26 @@ class RsListApplicationTests {
     }
 
     @Test
+    public void shouldUpdateEvent_false_when_userId_exsist_in_eventId() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .name("usera")
+                .gender("male")
+                .age(20)
+                .phone("10123456789")
+                .email("123@12.cn")
+                .vote(10)
+                .Id(1)
+                .build();
+        userRepository.save(user);
+        String json = "{\"eventName\":\"event\",\"keyword\":\"valid\",\"userId\":2}";
+
+        mockMvc.perform(post("/rs/{eventIndex}",2)
+                .content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
     void contextLoads() throws Exception {
         mockMvc.perform(get("/rs/list?start=1&end=3"))
                 .andExpect(status().isCreated())
