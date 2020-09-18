@@ -64,6 +64,30 @@ class RsListApplicationTests {
 
     }
 
+    @Test
+    public void shouldGetOneEvent() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .name("usera")
+                .gender("male")
+                .age(20)
+                .phone("10123456789")
+                .email("123@12.cn")
+                .vote(10)
+                .build();
+        userRepository.save(user);
+        RsEventEntity rsEventEntity = RsEventEntity.builder()
+                .eventName("event2")
+                .keyword("key")
+                .user(user)
+                .build();
+        rsEventRepository.save(rsEventEntity);
+
+        mockMvc.perform(get("/rs/event/{index}",rsEventEntity.getId()))
+                .andExpect(jsonPath("$.eventName",is("event2")))
+                .andExpect(jsonPath("$.user.name",is("usera")));
+
+
+    }
 
 
     @Test
@@ -76,23 +100,6 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[1].keyword", is("无分类")))
                 .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[2].keyword", is("无分类")));
-
-    }
-
-    @Test
-    void geOneOfEvent() throws Exception {
-        mockMvc.perform(get("/rs/event/1"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.eventName", is("第一条事件")))
-                .andExpect(jsonPath("$.keyword", is("无分类")));
-        mockMvc.perform(get("/rs/event/2"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.eventName", is("第二条事件")))
-                .andExpect(jsonPath("$.keyword", is("无分类")));
-        mockMvc.perform(get("/rs/event/3"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.eventName", is("第三条事件")))
-                .andExpect(jsonPath("$.keyword", is("无分类")));
 
     }
 

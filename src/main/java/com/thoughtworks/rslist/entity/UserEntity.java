@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+public class UserEntity{
 
     @javax.persistence.Id
     @GeneratedValue
@@ -28,7 +28,7 @@ public class UserEntity {
     private String phone;
     private Integer vote;
 
-    @OneToMany(mappedBy = "userId",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE)
     private List<RsEventEntity> rsEvents;
 
 

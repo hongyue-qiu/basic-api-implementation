@@ -1,8 +1,9 @@
 package com.thoughtworks.rslist.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -19,22 +20,22 @@ public class RsEventEntity {
     @Column(name = "name")
     private String eventName;
     private String keyword;
-    private int userId;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private UserEntity user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     public RsEventEntity(String eventName, String keyword) {
         this.eventName = eventName;
         this.keyword = keyword;
     }
 
-    public RsEventEntity(String eventName, String keyword, int userId) {
+    public RsEventEntity(String eventName, String keyword, UserEntity user) {
         this.eventName = eventName;
         this.keyword = keyword;
-        this.userId = userId;
+        this.user = user;
     }
+
 
     public Integer getId() {
         return id;
@@ -60,13 +61,4 @@ public class RsEventEntity {
         this.keyword = keyword;
     }
 
-    @JsonIgnore
-    public int getUserId() {
-        return userId;
-    }
-
-    @JsonProperty
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 }

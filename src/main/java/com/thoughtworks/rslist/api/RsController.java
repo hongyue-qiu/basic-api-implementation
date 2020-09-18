@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.exception.PostResult;
 import com.thoughtworks.rslist.repository.RsEventRepository;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class RsController {
@@ -61,11 +63,26 @@ public class RsController {
     }
 
     @GetMapping("/rs/event/{index}")
-    public ResponseEntity<RsEvent> getRsEventByRange(@PathVariable int index) {
-        if (index > rsList.size()){
+    public ResponseEntity<RsEvent> getRsEventsofOne(@PathVariable int index) {
+        Optional<RsEventEntity> result = rsEventRepository.findById(index);
+        if (!result.isPresent()){
             throw new IndexOutOfBoundsException();
         }
-        return ResponseEntity.created(null).body(rsList.get(index - 1));
+
+        RsEventEntity rsEventEntity = result.get();
+        UserEntity user = rsEventEntity.getUser();
+//        userRepository.findAllById(rsEventRepository.getUserId()).get();
+
+        return ResponseEntity.ok(RsEvent.builder()
+                .eventName(rsEventEntity.getEventName())
+                .keyword(rsEventEntity.getKeyword())
+                .user(new User(
+                        user.getName(),
+                        user.getGender(),
+                        user.getAge(),
+                        user.getEmail(),
+                        user.getPhone()))
+                .build());
     }
 
     @ExceptionHandler({IndexOutOfBoundsException.class,
@@ -85,15 +102,19 @@ public class RsController {
 
     @PostMapping("/rs/event")
     public ResponseEntity addRsEvent(@Valid @RequestBody RsEvent rsEvent) throws Exception {
+        if (!userRepository.existsById(rsEvent.getUserId())){
+            return ResponseEntity.badRequest().build();
+        }
 
         RsEventEntity rsEventEntity = RsEventEntity.builder()
                 .eventName(rsEvent.getEventName())
                 .keyword(rsEvent.getKeyword())
-                .userId(rsEvent.getUserId())
+                .user(UserEntity.builder()
+                        .Id(rsEvent.getUserId())
+                        .build())
                 .build();
         rsEventRepository.save(rsEventEntity);
 
-        rsList.add(rsEvent);
         return ResponseEntity.created(null).header("index",String.valueOf(rsList.indexOf(rsEvent))).build();
     }
 
@@ -124,9 +145,9 @@ public class RsController {
         List<RsEvent> tempList = rsList;
         for (int i = 0; i < tempList.size(); i++) {
             RsEvent rsEvent =tempList.get(i);
-            if (rsEvent.getEventUser() == null)
+            if (rsEvent.getUser() == null)
             rsEvent.setUserName(user.getName());
-            rsEvent.setEventUser(user);
+            rsEvent.setUser(user);
             return ResponseEntity.created(null).header("index",String.valueOf(i)).build();
         }
 

@@ -2,13 +2,17 @@ package com.thoughtworks.rslist.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 @Data
-public class RsEvent {
+@Builder
+@AllArgsConstructor
+public class RsEvent implements Serializable {
 
 
     @NotEmpty
@@ -16,15 +20,15 @@ public class RsEvent {
     private String keyword;
     private String userName;
     private Integer userId;
-    @Valid
-    User eventUser;
+
+    private User user;
 
 
 
     public RsEvent(String eventName, String keyword, User eventUser) {
         this.eventName = eventName;
         this.keyword = keyword;
-        this.eventUser = eventUser;
+        this.user = eventUser;
     }
     public String getUsername() {
         return userName;
@@ -75,11 +79,12 @@ public class RsEvent {
         this.keyword = keyword;
     }
 
-    public User getEventUser() {
-        return eventUser;
+    @JsonProperty
+    public User getUser() {
+        return user;
     }
-
-    public void setEventUser(User eventUser) {
-        this.eventUser = eventUser;
+    @JsonIgnore
+    public void setUser(User user) {
+        this.user = user;
     }
 }

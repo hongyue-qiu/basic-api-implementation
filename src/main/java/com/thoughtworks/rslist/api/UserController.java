@@ -5,6 +5,7 @@ import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,26 +19,24 @@ import java.util.List;
 @RestController
 public class UserController {
 
+
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    RsEventRepository rsEventRepository;
+
+
+    public UserController(UserRepository userRepository, RsEventRepository rsEventRepository){
+        this.userRepository = userRepository;
+        this.rsEventRepository = rsEventRepository;
+    }
     List<User> userLists = initUserList();
-
-
 
     private List<User> initUserList() {
         List<User> userTempList = new ArrayList<>();
         userTempList.add(new User("qq", "femail", 20, "123@123.com", "10123456789"));
         return userTempList;
     }
-
-    UserRepository userRepository;
-    RsEventRepository rsEventRepository;
-
-
-    public UserController(UserRepository userRepository, RsEventRepository rsEventRepository){
-        this.userRepository = userRepository;
-
-    }
-
-
 
     @PostMapping("/user/register")
     public ResponseEntity registUser(@Valid @RequestBody User user) {

@@ -1,11 +1,15 @@
 package com.thoughtworks.rslist.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.*;
 
 @Data
-public class User {
+@Builder
+@AllArgsConstructor
+public class User{
 
     @NotEmpty
     @Size(max = 8)
