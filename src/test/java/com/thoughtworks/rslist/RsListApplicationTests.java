@@ -65,6 +65,17 @@ class RsListApplicationTests {
     }
 
     @Test
+    public void shouldReturn400AddRsEventWhenUserNotExists() throws Exception {
+        String json = "{\"eventName\":\"event\",\"keyword\":\"valid\",\"userId\":1}";
+
+        mockMvc.perform(post("/rs/event")
+                .content(json).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        List<RsEventEntity> rsEventEntities = rsEventRepository.findAll();
+        assertEquals(0, rsEventEntities.size());
+    }
+
+    @Test
     public void shouldGetOneEvent() throws Exception {
         UserEntity user = UserEntity.builder()
                 .name("usera")
