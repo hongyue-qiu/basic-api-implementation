@@ -5,7 +5,6 @@ import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +19,10 @@ import java.util.List;
 public class UserController {
 
 
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RsEventRepository rsEventRepository;
+//    @Autowired
+    private final UserRepository userRepository;
+//    @Autowired
+    private final RsEventRepository rsEventRepository;
 
 
     public UserController(UserRepository userRepository, RsEventRepository rsEventRepository){

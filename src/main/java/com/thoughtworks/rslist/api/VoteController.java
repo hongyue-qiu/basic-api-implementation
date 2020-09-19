@@ -2,10 +2,7 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.Vote;
 import com.thoughtworks.rslist.entity.VoteEntity;
-import com.thoughtworks.rslist.repository.RsEventRepository;
-import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +15,11 @@ import java.util.stream.Collectors;
 
 @RestController
 public class VoteController {
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RsEventRepository rsEventRepository;
-    @Autowired
+//    @Autowired
+//    UserRepository userRepository;
+//    @Autowired
+//    RsEventRepository rsEventRepository;
+//    @Autowired
     private final VoteRepository voteRepository;
 
 

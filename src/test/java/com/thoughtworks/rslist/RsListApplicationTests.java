@@ -41,6 +41,7 @@ class RsListApplicationTests {
     VoteRepository voteRepository;
 
 
+
     @BeforeEach
     void setUp() {
         rsEventRepository.deleteAll();
