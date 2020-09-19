@@ -26,7 +26,11 @@ public class RsEvent implements Serializable {
     private User user;
     private int vote;
 
-
+    public RsEvent(@NotEmpty String eventName, String keyword, @NotNull Integer userId) {
+        this.eventName = eventName;
+        this.keyword = keyword;
+        this.userId = userId;
+    }
 
     public RsEvent(String eventName, String keyword, User eventUser) {
         this.eventName = eventName;

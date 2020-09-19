@@ -73,15 +73,16 @@ public class RsController {
         }
         return ResponseEntity.created(null).body(rsList.subList(start - 1, end));
     }
+
     @GetMapping("/rs/lists")
     public ResponseEntity<List<RsEvent>> getRsEventInSQL(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
         List<RsEventEntity> rsEventEntityList = rsEventRepository.findAll();
         List<RsEvent> rsEventList = new ArrayList<>();
         Iterator<RsEventEntity> iterator = rsEventEntityList.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             RsEventEntity rsEventEntity = iterator.next();
             RsEvent rsEvent = new RsEvent();
-            BeanUtils.copyProperties(rsEventEntity,rsEvent);
+            BeanUtils.copyProperties(rsEventEntity, rsEvent);
             rsEventList.add(rsEvent);
         }
 
@@ -143,34 +144,17 @@ public class RsController {
         return ResponseEntity.created(null).header("index", String.valueOf(rsList.indexOf(rsEvent))).build();
     }
 
-    @PutMapping("/rs/modify/{index}")
-    public ResponseEntity modifyResearch(@PathVariable int index, @RequestBody RsEvent rsEvent) {
-
-        RsEvent reEventModified = rsList.get(index - 1);
-        if (!rsEvent.getEventName().isEmpty()) {
-            reEventModified.setEventName(rsEvent.getEventName());
-        }
-        if (!rsEvent.getKeyword().isEmpty()) {
-            reEventModified.setKeyword(rsEvent.getKeyword());
-        }
-
-        rsList.set(index - 1, reEventModified);
-
-        return ResponseEntity.created(null).header("index", String.valueOf(rsList.indexOf(rsEvent))).build();
-    }
-
     @PutMapping("/rs/alter/{index}")
     public ResponseEntity alterResearch(@PathVariable int index, @RequestBody RsEvent rsEvent) {
-
-        RsEvent reEventModified = rsList.get(index - 1);
-        if (!rsEvent.getEventName().isEmpty()) {
-            reEventModified.setEventName(rsEvent.getEventName());
+        Optional<RsEventEntity> rsEventEntity = rsEventRepository.findById(index);
+        RsEventEntity rsEvents = rsEventEntity.get();
+        if (rsEvent.getEventName() != null) {
+            rsEvents.setEventName(rsEvent.getEventName());
         }
-        if (!rsEvent.getKeyword().isEmpty()) {
-            reEventModified.setKeyword(rsEvent.getKeyword());
+        if (rsEvent.getKeyword() != null) {
+            rsEvents.setKeyword(rsEvent.getKeyword());
         }
-
-        rsList.set(index - 1, reEventModified);
+        rsEventRepository.save(rsEvents);
 
         return ResponseEntity.created(null).header("index", String.valueOf(rsList.indexOf(rsEvent))).build();
     }
@@ -221,7 +205,7 @@ public class RsController {
         Optional<RsEventEntity> rsEventEntity = rsEventRepository.findById(rsEventId);
         Optional<UserEntity> userEntity = userRepository.findById(vote.getUserId());
         if (!rsEventEntity.isPresent() || !userEntity.isPresent() ||
-                vote.getVoteNum() > userEntity.get().getVote()){
+                vote.getVoteNum() > userEntity.get().getVote()) {
             return ResponseEntity.badRequest().build();
         }
         VoteEntity voteEntity = VoteEntity.builder()
@@ -232,10 +216,10 @@ public class RsController {
                 .build();
         voteRepository.save(voteEntity);
         UserEntity user = userEntity.get();
-        user.setVote(user.getVote()-vote.getVoteNum());
+        user.setVote(user.getVote() - vote.getVoteNum());
         userRepository.save(user);
         RsEventEntity rsEvent = rsEventEntity.get();
-        rsEvent.setVote(rsEvent.getVote()+vote.getVoteNum());
+        rsEvent.setVote(rsEvent.getVote() + vote.getVoteNum());
         rsEventRepository.save(rsEvent);
 
         return ResponseEntity.created(null).build();

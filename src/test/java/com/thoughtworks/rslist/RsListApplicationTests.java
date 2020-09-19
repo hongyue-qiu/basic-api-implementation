@@ -100,9 +100,9 @@ class RsListApplicationTests {
                 .build();
         rsEventRepository.save(rsEventEntity);
 
-        mockMvc.perform(get("/rs/event/{index}",rsEventEntity.getId()))
-                .andExpect(jsonPath("$.eventName",is("event2")))
-                .andExpect(jsonPath("$.user.name",is("usera")));
+        mockMvc.perform(get("/rs/event/{index}", rsEventEntity.getId()))
+                .andExpect(jsonPath("$.eventName", is("event2")))
+                .andExpect(jsonPath("$.user.name", is("usera")));
     }
 
     @Test
@@ -119,7 +119,7 @@ class RsListApplicationTests {
         userRepository.save(user);
         String json = "{\"eventName\":\"event\",\"keyword\":\"valid\",\"userId\":1}";
 
-        mockMvc.perform(post("/rs/{eventIndex}",1)
+        mockMvc.perform(post("/rs/{eventIndex}", 1)
                 .content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
@@ -142,11 +142,12 @@ class RsListApplicationTests {
         userRepository.save(user);
         String json = "{\"eventName\":\"event\",\"keyword\":\"valid\",\"userId\":2}";
 
-        mockMvc.perform(post("/rs/{eventIndex}",2)
+        mockMvc.perform(post("/rs/{eventIndex}", 2)
                 .content(json).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
     }
+
     @Test
     public void should_update_votenum_when_userId_vote_more_than_votnum() throws Exception {
         UserEntity user = UserEntity.builder()
@@ -169,7 +170,7 @@ class RsListApplicationTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonVote = objectMapper.writeValueAsString(vote);
 
-        mockMvc.perform(post("/rs/vote/{rsEventId}",rsEvent.getId())
+        mockMvc.perform(post("/rs/vote/{rsEventId}", rsEvent.getId())
                 .content(jsonVote)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
@@ -200,7 +201,7 @@ class RsListApplicationTests {
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonVote = objectMapper.writeValueAsString(vote);
 
-        mockMvc.perform(post("/rs/vote/{rsEventId}",rsEvent.getId())
+        mockMvc.perform(post("/rs/vote/{rsEventId}", rsEvent.getId())
                 .content(jsonVote)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -221,43 +222,38 @@ class RsListApplicationTests {
 
     }
 
+
     @Test
-    void shouldCouldModifyResearchByIndex() throws Exception {
-        RsEvent eventIndexInOneModify = new RsEvent("经过修改后的第一条事件", "其他类");
-        RsEvent eventIndexInTwoModify = new RsEvent("经过修改后的第二条事件", "");
-        RsEvent eventIndexInThreeModify = new RsEvent("", "其他类");
+    void shouldAlterResearchByIndex() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .name("usera")
+                .gender("male")
+                .age(20)
+                .phone("10123456789")
+                .email("123@12.cn")
+                .vote(10)
+                .build();
+        userRepository.save(user);
+        RsEventEntity rsEvent = RsEventEntity.builder()
+                .user(user)
+                .eventName("event")
+                .keyword("key")
+                .vote(0)
+                .build();
+        rsEventRepository.save(rsEvent);
 
-        String eventIndexOneJsonStringModified = convertResearchToJsonString(eventIndexInOneModify);
-        String eventIndexTwoJsonStringModified = convertResearchToJsonString(eventIndexInTwoModify);
-        String eventIndexThreeJsonStringModified = convertResearchToJsonString(eventIndexInThreeModify);
-
-
-        performPut("/rs/modify/1", eventIndexOneJsonStringModified);
-        performPut("/rs/modify/2", eventIndexTwoJsonStringModified);
-        performPut("/rs/modify/3", eventIndexThreeJsonStringModified);
-
-
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isCreated())
-
-                .andExpect(jsonPath("$[0].eventName", is("经过修改后的第一条事件")))
-                .andExpect(jsonPath("$[0].keyword", is("其他类")))
-                .andExpect(jsonPath("$[1].eventName", is("经过修改后的第二条事件")))
-                .andExpect(jsonPath("$[1].keyword", is("无分类")))
-                .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
-                .andExpect(jsonPath("$[2].keyword", is("其他类")));
-    }
-
-    private String convertResearchToJsonString(RsEvent rsEvent) throws Exception {
+        RsEvent rsEvent1 = new RsEvent("经过修改后的第一条事件", "其他类", user.getId());
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(rsEvent);
-    }
-
-    private void performPut(String url, String jsonString) throws Exception {
-        mockMvc.perform(put(url)
+        String json = objectMapper.writeValueAsString(rsEvent1);
+        mockMvc.perform(put("/rs/alter/{index}", rsEvent.getId())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(jsonString))
+                .content(json))
                 .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/rs/event/{index}", rsEvent.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.eventName", is("经过修改后的第一条事件")))
+                .andExpect(jsonPath("$.keyword", is("其他类")));
     }
 
     @Test
@@ -287,7 +283,7 @@ class RsListApplicationTests {
                 .build();
         rsEventRepository.save(rsEvent2);
 
-        mockMvc.perform(get("/rs/event/{index}",rsEvent.getId()))
+        mockMvc.perform(get("/rs/event/{index}", rsEvent.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName", is("event")))
                 .andExpect(jsonPath("$.keyword", is("key")));
@@ -295,12 +291,12 @@ class RsListApplicationTests {
         mockMvc.perform(delete("/rs/deleteInSQL/1"))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/rs/event/{index}",rsEvent2.getId()))
+        mockMvc.perform(get("/rs/event/{index}", rsEvent2.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName", is("event2")))
                 .andExpect(jsonPath("$.keyword", is("key")));
 
-        mockMvc.perform(get("/rs/event/{index}",rsEvent.getId()))
+        mockMvc.perform(get("/rs/event/{index}", rsEvent.getId()))
                 .andExpect(status().isBadRequest());
 
     }
