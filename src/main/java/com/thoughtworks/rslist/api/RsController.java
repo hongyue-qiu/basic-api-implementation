@@ -11,6 +11,7 @@ import com.thoughtworks.rslist.exception.PostResult;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +52,8 @@ public class RsController {
 
     private List<RsEvent> rsList = initRsList();
 
+//    private List<RsEvent> rsList = rsEventRepository.findAlls();
+
     private List<RsEvent> initRsList() {
         List<RsEvent> tempRsList = new ArrayList<>();
         tempRsList.add(new RsEvent("第一条事件", "无分类", user));
@@ -68,6 +72,20 @@ public class RsController {
             throw new IndexOutOfBoundsException();
         }
         return ResponseEntity.created(null).body(rsList.subList(start - 1, end));
+    }
+    @GetMapping("/rs/lists")
+    public ResponseEntity<List<RsEvent>> getRsEventInSQL(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end) {
+        List<RsEventEntity> rsEventEntityList = rsEventRepository.findAll();
+        List<RsEvent> rsEventList = new ArrayList<>();
+        Iterator<RsEventEntity> iterator = rsEventEntityList.iterator();
+        while (iterator.hasNext()){
+            RsEventEntity rsEventEntity = iterator.next();
+            RsEvent rsEvent = new RsEvent();
+            BeanUtils.copyProperties(rsEventEntity,rsEvent);
+            rsEventList.add(rsEvent);
+        }
+
+        return ResponseEntity.created(null).body(rsEventList.subList(start - 1, end));
     }
 
     @GetMapping("/rs/event/{index}")
@@ -141,9 +159,26 @@ public class RsController {
         return ResponseEntity.created(null).header("index", String.valueOf(rsList.indexOf(rsEvent))).build();
     }
 
-    @DeleteMapping("/rs/delete/{index}")
-    public ResponseEntity<PostResult> deleteResearch(@PathVariable int index) {
-        rsList.remove(index - 1);
+    @PutMapping("/rs/alter/{index}")
+    public ResponseEntity alterResearch(@PathVariable int index, @RequestBody RsEvent rsEvent) {
+
+        RsEvent reEventModified = rsList.get(index - 1);
+        if (!rsEvent.getEventName().isEmpty()) {
+            reEventModified.setEventName(rsEvent.getEventName());
+        }
+        if (!rsEvent.getKeyword().isEmpty()) {
+            reEventModified.setKeyword(rsEvent.getKeyword());
+        }
+
+        rsList.set(index - 1, reEventModified);
+
+        return ResponseEntity.created(null).header("index", String.valueOf(rsList.indexOf(rsEvent))).build();
+    }
+
+
+    @DeleteMapping("/rs/deleteInSQL/{index}")
+    public ResponseEntity<PostResult> deleteResearchInSQL(@PathVariable int index) {
+        rsEventRepository.deleteById(index);
         return ResponseEntity.created(null).header("index", String.valueOf(index)).build();
     }
 

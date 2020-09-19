@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface RsEventRepository extends CrudRepository<RsEventEntity,Integer> {
     List<RsEventEntity> findAll();
+
     Optional<RsEventEntity> findById(Integer id);
     RsEventEntity getById(Integer id);
 }

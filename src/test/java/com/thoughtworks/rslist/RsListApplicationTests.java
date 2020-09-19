@@ -261,17 +261,48 @@ class RsListApplicationTests {
     }
 
     @Test
-    void shouldCouldDeleteByIndex() throws Exception {
+    void shouldCouldDeleteByIndexInSQL() throws Exception {
 
-        mockMvc.perform(delete("/rs/delete/1"))
+        UserEntity user = UserEntity.builder()
+                .name("usera")
+                .gender("male")
+                .age(20)
+                .phone("10123456789")
+                .email("123@12.cn")
+                .vote(10)
+                .build();
+        userRepository.save(user);
+        RsEventEntity rsEvent = RsEventEntity.builder()
+                .user(user)
+                .eventName("event")
+                .keyword("key")
+                .vote(0)
+                .build();
+        rsEventRepository.save(rsEvent);
+        RsEventEntity rsEvent2 = RsEventEntity.builder()
+                .user(user)
+                .eventName("event2")
+                .keyword("key")
+                .vote(0)
+                .build();
+        rsEventRepository.save(rsEvent2);
+
+        mockMvc.perform(get("/rs/event/{index}",rsEvent.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.eventName", is("event")))
+                .andExpect(jsonPath("$.keyword", is("key")));
+
+        mockMvc.perform(delete("/rs/deleteInSQL/1"))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(get("/rs/list"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$[0].eventName", is("第二条事件")))
-                .andExpect(jsonPath("$[0].keyword", is("无分类")))
-                .andExpect(jsonPath("$[1].eventName", is("第三条事件")))
-                .andExpect(jsonPath("$[1].keyword", is("无分类")));
+        mockMvc.perform(get("/rs/event/{index}",rsEvent2.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.eventName", is("event2")))
+                .andExpect(jsonPath("$.keyword", is("key")));
+
+        mockMvc.perform(get("/rs/event/{index}",rsEvent.getId()))
+                .andExpect(status().isBadRequest());
+
     }
 
     @Test
