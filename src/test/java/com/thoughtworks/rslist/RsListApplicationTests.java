@@ -175,7 +175,34 @@ class RsListApplicationTests {
 
         List<RsEventEntity> rsEventEntities = rsEventRepository.findAll();
         assertEquals(6, rsEventEntities.get(0).getVote());
+    }
 
+    @Test
+    public void should_update_false_votenum_when_userId_vote_less_than_votnum() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .name("usera")
+                .gender("male")
+                .age(20)
+                .phone("10123456789")
+                .email("123@12.cn")
+                .vote(10)
+                .build();
+        userRepository.save(user);
+        RsEventEntity rsEvent = RsEventEntity.builder()
+                .user(user)
+                .eventName("event")
+                .keyword("key")
+                .vote(0)
+                .build();
+        rsEventRepository.save(rsEvent);
+        Vote vote = new Vote(user.getId(), rsEvent.getId(), 15);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonVote = objectMapper.writeValueAsString(vote);
+
+        mockMvc.perform(post("/rs/vote/{rsEventId}",rsEvent.getId())
+                .content(jsonVote)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
 
     }
 
