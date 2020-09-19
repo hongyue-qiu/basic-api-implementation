@@ -47,14 +47,6 @@ public class VoteController {
              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
              @RequestParam
              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime) {
-//        List<VoteEntity> voteEntities = voteRepository.findAllByLocalDateTimeBetween(startTime,endTime);
-//        return voteEntities.stream().map(vote -> Vote.builder()
-//                .userId(vote.getUser().getId())
-//                .rsEventId(vote.getRsEvent().getId())
-//                .voteNum(vote.getNum())
-//                .localDateTime(vote.getLocalDateTime())
-//                .build()).collect(Collectors.toList());
-//        return ResponseEntity.ok().build();
         List<VoteEntity> voteEntityList = voteRepository.findAllByLocalDateTimeBetween(startTime, endTime);
         List<Vote> voteDtoList = voteEntityList.stream()
                 .map(voteEntity -> Vote.builder()
