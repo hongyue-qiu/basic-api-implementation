@@ -16,4 +16,17 @@ public class Vote {
     private int rsEventId;
     private LocalDateTime localDateTime;
     private int voteNum;
+
+    public Vote(int userId, int rsEventId, int voteNum) {
+        this.userId = userId;
+        this.rsEventId = rsEventId;
+        this.voteNum = voteNum;
+    }
+
+    public Vote(int userId, int rsEventId, LocalDateTime now) {
+        this.userId = userId;
+        this.rsEventId = rsEventId;
+    }
+
+
 }

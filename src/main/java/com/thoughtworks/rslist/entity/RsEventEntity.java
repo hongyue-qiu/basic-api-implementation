@@ -25,6 +25,9 @@ public class RsEventEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    private int vote;
+
+
     public RsEventEntity(String eventName, String keyword) {
         this.eventName = eventName;
         this.keyword = keyword;

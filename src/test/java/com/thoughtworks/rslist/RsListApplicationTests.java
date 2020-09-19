@@ -2,10 +2,12 @@ package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.dto.RsEvent;
+import com.thoughtworks.rslist.dto.Vote;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.repository.VoteRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +36,15 @@ class RsListApplicationTests {
     UserRepository userRepository;
     @Autowired
     RsEventRepository rsEventRepository;
+    @Autowired
+    VoteRepository voteRepository;
+
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAll();
         rsEventRepository.deleteAll();
+        voteRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -122,7 +128,7 @@ class RsListApplicationTests {
     }
 
     @Test
-    public void shouldUpdateEvent_false_when_userId_exsist_in_eventId() throws Exception {
+    public void shouldUpdateEvent_false_when_userId_not_exsist_in_eventId() throws Exception {
         UserEntity user = UserEntity.builder()
                 .name("usera")
                 .gender("male")
@@ -140,6 +146,39 @@ class RsListApplicationTests {
                 .andExpect(status().isBadRequest());
 
     }
+    @Test
+    public void should_update_votenum_when_userId_vote_more_than_votnum() throws Exception {
+        UserEntity user = UserEntity.builder()
+                .name("usera")
+                .gender("male")
+                .age(20)
+                .phone("10123456789")
+                .email("123@12.cn")
+                .vote(10)
+                .build();
+        userRepository.save(user);
+        RsEventEntity rsEvent = RsEventEntity.builder()
+                .user(user)
+                .eventName("event")
+                .keyword("key")
+                .vote(0)
+                .build();
+        rsEventRepository.save(rsEvent);
+        Vote vote = new Vote(user.getId(), rsEvent.getId(), 6);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonVote = objectMapper.writeValueAsString(vote);
+
+        mockMvc.perform(post("/rs/vote/{rsEventId}",rsEvent.getId())
+                .content(jsonVote)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        List<RsEventEntity> rsEventEntities = rsEventRepository.findAll();
+        assertEquals(6, rsEventEntities.get(0).getVote());
+
+
+    }
+
 
     @Test
     void contextLoads() throws Exception {

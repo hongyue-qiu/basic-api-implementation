@@ -24,6 +24,7 @@ public class RsEvent implements Serializable {
     private Integer userId;
 
     private User user;
+    private int vote;
 
 
 
