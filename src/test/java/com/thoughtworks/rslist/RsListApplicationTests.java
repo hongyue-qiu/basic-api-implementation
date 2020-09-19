@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -164,7 +165,7 @@ class RsListApplicationTests {
                 .vote(0)
                 .build();
         rsEventRepository.save(rsEvent);
-        Vote vote = new Vote(user.getId(), rsEvent.getId(), 6);
+        Vote vote = new Vote(user.getId(), rsEvent.getId(), LocalDateTime.now(), 6);
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonVote = objectMapper.writeValueAsString(vote);
 
